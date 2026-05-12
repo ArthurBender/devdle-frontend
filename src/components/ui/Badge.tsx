@@ -10,9 +10,9 @@ interface BadgeProps {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  success: "text-success",
-  warning: "text-warning",
-  error: "text-error",
+  success: "text-success bg-success/10 px-1.5 py-0.5 rounded-full",
+  warning: "text-warning bg-warning/10 px-1.5 py-0.5 rounded-full",
+  error: "text-error bg-error/10 px-1.5 py-0.5 rounded-full",
   neutral: "text-text-secondary",
 };
 
