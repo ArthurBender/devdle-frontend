@@ -25,6 +25,13 @@
   --color-warning: #f59e0b;
 }
 
+/* Language colors — static across light/dark */
+:root {
+  --color-lang-js: #f59e0b;
+  --color-lang-py: #3b82f6;
+  --color-lang-rb: #ef4444;
+}
+
 /* Wire tokens into Tailwind utilities: bg-bg, text-text-primary, border-border, etc. */
 @theme inline {
   --color-bg: var(--color-bg);
@@ -36,7 +43,25 @@
   --color-success: var(--color-success);
   --color-error: var(--color-error);
   --color-warning: var(--color-warning);
+  --color-lang-js: var(--color-lang-js);
+  --color-lang-py: var(--color-lang-py);
+  --color-lang-rb: var(--color-lang-rb);
 }
+
+/* Calendar heatmap squares (react-calendar-heatmap) */
+.react-calendar-heatmap { display: block; width: 100%; }
+.react-calendar-heatmap text {
+  font-size: 8px;
+  fill: var(--color-text-secondary);
+  font-family: system-ui, sans-serif;
+}
+.react-calendar-heatmap rect { rx: 2; }
+.react-calendar-heatmap rect:hover { opacity: 0.8; cursor: pointer; }
+.heatmap-empty { fill: var(--color-border); }
+.heatmap-scale-1 { fill: var(--color-accent); opacity: 0.25; }
+.heatmap-scale-2 { fill: var(--color-accent); opacity: 0.5; }
+.heatmap-scale-3 { fill: var(--color-accent); opacity: 0.75; }
+.heatmap-scale-4 { fill: var(--color-accent); }
 
 * {
   box-sizing: border-box;
