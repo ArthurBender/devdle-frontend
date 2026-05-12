@@ -278,3 +278,30 @@ Defined in `src/index.css`, available as Tailwind utilities via `@theme inline`:
 | `--color-lang-js` | `bg-lang-js`, `text-lang-js` | #f59e0b | #f59e0b |
 | `--color-lang-py` | `bg-lang-py`, `text-lang-py` | #3b82f6 | #3b82f6 |
 | `--color-lang-rb` | `bg-lang-rb`, `text-lang-rb` | #ef4444 | #ef4444 |
+
+---
+
+## Icon Reference (`react-icons/fi` — Feather)
+
+All icons use `react-icons`. Never write inline SVG components.
+
+| UI element | Icon |
+|---|---|
+| Stats button (header) | `FiUser` |
+| Tutorial / info button (header) | `FiHelpCircle` |
+| Theme toggle button (header) | `FiSun` / `FiMoon` |
+| Date nav previous | `FiChevronLeft` |
+| Date nav next | `FiChevronRight` |
+| Date label (header center) | `FiCalendar` |
+| Streak icon (StatsHero) | `FiZap` |
+| "Show calendar" expand | `FiChevronDown` |
+| "Hide calendar" collapse | `FiChevronUp` |
+| Problem panel open/close | `FiChevronRight` / `FiChevronLeft` |
+| Tests panel open/close | `FiChevronLeft` / `FiChevronRight` |
+| Run button | `FiPlay` |
+| Success checkmark | `FiCheckCircle` |
+| Test pass row | `FiCheck` |
+| Test fail row | `FiX` |
+| Test pending row | use a gray `○` circle element, not an icon |
+| Modal close (icon buttons) | `FiX` |
+| Back arrow (problem page header) | `FiArrowLeft` |

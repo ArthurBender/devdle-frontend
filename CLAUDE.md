@@ -46,6 +46,7 @@ A Wordle-inspired daily coding challenge. Every 24 hours, **6 problems** are gen
 | JS execution | Web Worker + `Function` constructor |
 | Python execution | Pyodide (~10 MB WASM, eager-load on first Python selection) |
 | Ruby execution | `@ruby/wasm-wasi` (~50 MB, lazy-load with progress bar on first Run click) |
+| Icons | `react-icons` (Feather subset via `react-icons/fi`) |
 | Activity heatmap | `react-calendar-heatmap` |
 | Backend | Express + TypeScript + MongoDB + Gemini (`../devdle-backend`) |
 
@@ -164,6 +165,12 @@ Format: `YYYY-MM-DD_language_difficulty` — e.g. `2026-05-12_javascript_beginne
 - **Theme:** Applied via `data-theme` attribute on `<html>`. `"system"` preference listens for `prefers-color-scheme` changes.
 - **Expert mode:** When `UserPrefs.expertMode` is true, `TestResultPanel` shows only "X/Y passed" — no individual test names.
 - **Monaco language IDs:** `"javascript"`, `"python"`, `"ruby"` (all have built-in syntax highlighting).
+
+---
+
+## Icons
+
+Use `react-icons` for all icons — never write inline SVG components. See `.claude/DESIGNS.md` for which icons map to which UI elements.
 
 ---
 
