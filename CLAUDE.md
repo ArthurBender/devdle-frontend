@@ -90,6 +90,14 @@ Note: VS Code may warn about `@theme` — this is a false positive. `.vscode/set
 
 ---
 
+## API Base URL
+
+`src/api/client.ts` prepends `VITE_API_BASE_URL` (from `.env`) to all fetch calls. Leave it unset for same-origin deployments — Vite's dev proxy and production co-location both work with relative `/api` paths.
+
+If frontend and backend are ever on separate domains (e.g. Vercel + Railway), set `VITE_API_BASE_URL=https://api.example.com` **and** add CORS middleware to the backend for `/api/problems/*` and `/api/health`. The `/api/internal/*` endpoint must **never** get CORS headers — browser blocks cross-origin requests there by design.
+
+---
+
 ## vite.config.ts — Required Settings
 
 These headers and options are mandatory for the WASM runtimes to function:
