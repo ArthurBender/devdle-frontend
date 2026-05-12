@@ -5,9 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Reference Documents
 
 - **Full product plan, all phases, TypeScript interfaces, and implementation notes:** `../.claude/PLAN.md`
-- **UI designs (PNG mockups for every screen and modal):** `.claude/designs/`
+- **UI design reference (layout, colors, component details — read this first):** `.claude/DESIGNS.md`
+- **UI design PNG mockups (source of truth, consult when DESIGNS.md is insufficient):** `.claude/designs/`
 
-Always consult these before implementing new screens or features.
+Always consult `.claude/DESIGNS.md` before implementing new screens or features. Only open PNGs if you need detail not covered there.
 
 ---
 
