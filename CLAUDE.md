@@ -54,48 +54,39 @@ A Wordle-inspired daily coding challenge. Every 24 hours, **6 problems** are gen
 
 **Never use Tailwind's built-in color palette directly** (no `bg-blue-500`, `text-gray-300`, etc.). All colors must come from custom design tokens backed by CSS variables so the palette can be updated in one place.
 
-**Setup pattern:**
+**Setup pattern (Tailwind v4 + `@tailwindcss/vite` — no `tailwind.config.ts`):**
 
-`src/index.css` — declare all colors as CSS variables under `:root` and `[data-theme="dark"]`:
+`src/index.css`:
 ```css
+@import "tailwindcss";
+
 :root {
   --color-bg: #ffffff;
-  --color-surface: #f5f5f5;
-  --color-border: #e0e0e0;
-  --color-text-primary: #111111;
-  --color-text-secondary: #555555;
-  --color-accent: #4f46e5;
-  --color-success: #16a34a;
-  --color-error: #dc2626;
-  --color-warning: #d97706;
+  /* light values ... */
 }
 
 [data-theme="dark"] {
-  --color-bg: #0f0f0f;
-  /* ... overrides ... */
+  --color-bg: #09090b;
+  /* dark overrides ... */
+}
+
+/* Wire CSS vars into Tailwind utilities */
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-accent: var(--color-accent);
+  --color-success: var(--color-success);
+  --color-error: var(--color-error);
+  --color-warning: var(--color-warning);
 }
 ```
 
-`tailwind.config.ts` — map every token:
-```ts
-theme: {
-  extend: {
-    colors: {
-      bg: 'var(--color-bg)',
-      surface: 'var(--color-surface)',
-      border: 'var(--color-border)',
-      'text-primary': 'var(--color-text-primary)',
-      'text-secondary': 'var(--color-text-secondary)',
-      accent: 'var(--color-accent)',
-      success: 'var(--color-success)',
-      error: 'var(--color-error)',
-      warning: 'var(--color-warning)',
-    },
-  },
-},
-```
-
 Usage in components: `bg-bg`, `text-text-primary`, `border-border`, `bg-accent`, etc.
+
+Note: VS Code may warn about `@theme` — this is a false positive. `.vscode/settings.json` sets `"css.lint.unknownAtRules": "ignore"` to suppress it.
 
 ---
 
@@ -159,7 +150,7 @@ Format: `YYYY-MM-DD_language_difficulty` — e.g. `2026-05-12_javascript_beginne
 ## Important Development Notes
 
 - **UTC everywhere:** Use `new Date().toISOString().slice(0, 10)` — never local date methods. Avoids timezone mismatches between users and server.
-- **`APP_START_DATE`:** Defined once in `src/config.ts`. DateNav disables "previous" at this date. Puzzle number `#N` = days since this date + 1.
+- **`APP_START_DATE`:** Read from `VITE_APP_START_DATE` in `.env` (Vite bakes it into the bundle at build time). Fallback hardcoded in `src/config.ts`. DateNav disables "previous" at this date. Puzzle number `#N` = days since this date + 1. Update `.env` and rebuild before deploying.
 - **All generated problems use `solve` as the entry-point function name** across all three languages. Workers call `solve(...args)` directly.
 - **Theme:** Applied via `data-theme` attribute on `<html>`. `"system"` preference listens for `prefers-color-scheme` changes.
 - **Expert mode:** When `UserPrefs.expertMode` is true, `TestResultPanel` shows only "X/Y passed" — no individual test names.
