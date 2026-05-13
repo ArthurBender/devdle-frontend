@@ -14,8 +14,16 @@ async function apiFetch<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export function fetchProblems(date: string): Promise<DailyProblemSet> {
-  return apiFetch(`/api/problems/${date}`);
+export async function fetchProblems(
+  date: string
+): Promise<DailyProblemSet | { generating: true }> {
+  const res = await fetch(`${API_BASE}/api/problems/${date}`);
+  if (res.status === 202) return { generating: true };
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw Object.assign(new Error(text), { status: res.status });
+  }
+  return res.json() as Promise<DailyProblemSet>;
 }
 
 export function fetchTestCases(

@@ -72,6 +72,11 @@ export default function HomePage() {
             Loading today's problems…
           </div>
         )}
+        {problemsState.status === "generating" && (
+          <div className="text-text-secondary text-sm text-center py-12">
+            Problems are being generated — check back in a moment…
+          </div>
+        )}
         {problemsState.status === "not-found" && (
           <div className="text-text-secondary text-sm text-center py-12">
             No challenge for this day.
