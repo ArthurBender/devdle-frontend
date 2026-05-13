@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FiArrowLeft, FiPlay, FiRefreshCw } from "react-icons/fi";
 import { Layout } from "../components/layout/Layout";
@@ -10,7 +10,8 @@ import { TestResultPanel } from "../components/problem/TestResultPanel";
 import { Button } from "../components/ui/Button";
 import { useProblems } from "../hooks/useProblems";
 import { usePrefs } from "../hooks/usePrefs";
-import type { Language, Difficulty, TestResult } from "../types";
+import { useCodeRunner } from "../hooks/useCodeRunner";
+import type { Language, Difficulty } from "../types";
 
 const LANG_ABBR: Record<Language, string> = {
   javascript: ".js",
@@ -46,27 +47,42 @@ export default function ProblemPage() {
       : null;
 
   const [code, setCode] = useState<string>("");
-  const [results, setResults] = useState<TestResult[]>([]);
-  const [outputLines, setOutputLines] = useState<string[]>([]);
-  const [runCount, setRunCount] = useState(0);
   const [problemOpen, setProblemOpen] = useState(true);
   const [testsOpen, setTestsOpen] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
 
-  // Reset code when problem loads
-  const [lastProblemId, setLastProblemId] = useState<string | null>(null);
-  if (problem && problem.id !== lastProblemId) {
-    setLastProblemId(problem.id);
-    setCode(problem.starterCode);
-    setResults([]);
-    setOutputLines([]);
-    setRunCount(0);
-  }
+  const runner = useCodeRunner(
+    safeLang,
+    problem?.id ?? "",
+    safeDate,
+    problem?.testCases.length ?? 0,
+  );
+
+  // Reset editor + runner when problem changes
+  useEffect(() => {
+    if (problem) {
+      setCode(problem.starterCode);
+      runner.reset();
+    }
+    // runner.reset is stable — eslint-disable-next-line is correct
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [problem?.id]);
 
   const handleRun = useCallback(() => {
-    // Phase 4: wire to useCodeRunner
-    setRunCount((n) => n + 1);
-  }, []);
+    if (problem) runner.run(code);
+  }, [problem, runner, code]);
+
+  // Cmd+Enter / Ctrl+Enter keyboard shortcut
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        handleRun();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [handleRun]);
 
   const centerContent = (
     <div className="flex items-center gap-2">
@@ -138,9 +154,9 @@ export default function ProblemPage() {
             />
             <TestResultPanel
               testCases={problem.testCases}
-              results={results}
-              runCount={runCount}
-              outputLines={outputLines}
+              results={runner.results}
+              runCount={runner.runCount}
+              outputLines={runner.outputLines}
               isOpen={testsOpen}
               expertMode={prefs.expertMode}
               onClose={() => setTestsOpen(false)}
@@ -162,7 +178,7 @@ export default function ProblemPage() {
         <div className="border-t border-border px-4 py-2 flex items-center justify-between bg-surface shrink-0">
           <span className="text-xs text-text-secondary">
             Run
-            {runCount > 0 ? ` · attempt ${runCount}` : " · first attempt"}
+            {runner.runCount > 0 ? ` · attempt ${runner.runCount}` : " · first attempt"}
           </span>
           <div className="flex items-center gap-2">
             <Button
@@ -170,18 +186,23 @@ export default function ProblemPage() {
               size="md"
               onClick={() => {
                 setCode(problem.starterCode);
-                setResults([]);
-                setOutputLines([]);
-                setRunCount(0);
+                runner.reset();
               }}
             >
               <FiRefreshCw size={13} />
               Reset
             </Button>
-            <Button variant="primary" size="md" onClick={handleRun}>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleRun}
+              disabled={runner.isRunning}
+            >
               <FiPlay size={13} />
-              Run
-              <kbd className="opacity-60 text-sm font-mono ml-0.5">⌘↵</kbd>
+              {runner.isRunning ? "Running…" : "Run"}
+              {!runner.isRunning && (
+                <kbd className="opacity-60 text-sm font-mono ml-0.5">⌘↵</kbd>
+              )}
             </Button>
           </div>
         </div>

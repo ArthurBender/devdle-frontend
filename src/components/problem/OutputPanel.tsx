@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 
 interface OutputPanelProps {
@@ -7,6 +7,11 @@ interface OutputPanelProps {
 
 export function OutputPanel({ lines }: OutputPanelProps) {
   const [expanded, setExpanded] = useState(false);
+
+  // Auto-expand when output arrives
+  useEffect(() => {
+    if (lines.length > 0) setExpanded(true);
+  }, [lines.length]);
 
   return (
     <div className="border-t border-border shrink-0">
