@@ -65,7 +65,7 @@ export default function HomePage() {
           <span className="text-text-secondary text-xl"> — one puzzle at a time.</span>
         </div>
 
-        <StatsHero date={safeDate} totalProblems={6} />
+        <StatsHero totalProblems={6} />
 
         {problemsState.status === "loading" && (
           <div className="text-text-secondary text-sm text-center py-12">

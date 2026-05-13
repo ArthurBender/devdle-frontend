@@ -7,6 +7,7 @@ interface RunnerState {
   results: TestResult[];
   outputLines: string[];
   runCount: number;
+  solvedAtRun: number | null;
   isRunning: boolean;
 }
 
@@ -20,6 +21,7 @@ export function useCodeRunner(
     results: [],
     outputLines: [],
     runCount: 0,
+    solvedAtRun: null,
     isRunning: false,
   });
 
@@ -27,7 +29,7 @@ export function useCodeRunner(
   const runCountRef = useRef(0);
 
   const reset = useCallback(() => {
-    setState({ results: [], outputLines: [], runCount: 0, isRunning: false });
+    setState({ results: [], outputLines: [], runCount: 0, solvedAtRun: null, isRunning: false });
     runCountRef.current = 0;
     isRunningRef.current = false;
   }, []);
@@ -49,21 +51,29 @@ export function useCodeRunner(
           setState((s) => ({ ...s, outputLines: [...liveLines] }));
         });
 
-        isRunningRef.current = false;
-        setState({ results, outputLines: liveLines, runCount: thisRun, isRunning: false });
-
         const allPassed = results.length === testCasesLength && results.every((r) => r.passed);
         recordAttempt(problemDate, problemId, allPassed, thisRun);
+
+        isRunningRef.current = false;
+        setState((prev) => ({
+          results,
+          outputLines: liveLines,
+          runCount: thisRun,
+          // Freeze the count at first solve; never overwrite once set
+          solvedAtRun: prev.solvedAtRun ?? (allPassed ? thisRun : null),
+          isRunning: false,
+        }));
       } catch (err) {
         const errMsg = err instanceof Error ? err.message : String(err);
         const errorLine = `Error: ${errMsg}`;
         isRunningRef.current = false;
-        setState({
+        setState((prev) => ({
           results: [],
           outputLines: [...liveLines, errorLine],
           runCount: thisRun,
+          solvedAtRun: prev.solvedAtRun,
           isRunning: false,
-        });
+        }));
       }
     },
     [lang, problemId, problemDate, testCasesLength],

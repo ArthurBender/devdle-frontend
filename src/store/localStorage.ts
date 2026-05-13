@@ -27,7 +27,10 @@ export function loadStats(): LocalStats {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return { ...EMPTY_STATS, history: [] };
-    return { ...EMPTY_STATS, ...(JSON.parse(raw) as Partial<LocalStats>) };
+    const stored = { ...EMPTY_STATS, ...(JSON.parse(raw) as Partial<LocalStats>) };
+    // Recalculate live so the streak is never stale (e.g. after a day passes)
+    const { currentStreak, maxStreak } = calcStreaks(stored.history);
+    return { ...stored, currentStreak, maxStreak: Math.max(maxStreak, stored.maxStreak) };
   } catch {
     return { ...EMPTY_STATS, history: [] };
   }
@@ -94,11 +97,12 @@ export function recordAttempt(
     stats.totalPlayed++;
   }
 
-  if (solved) stats.totalSolved++;
-
-  const { currentStreak, maxStreak } = calcStreaks(stats.history);
-  stats.currentStreak = currentStreak;
-  stats.maxStreak = Math.max(maxStreak, stats.maxStreak);
+  if (solved) {
+    stats.totalSolved++;
+    const { currentStreak, maxStreak } = calcStreaks(stats.history);
+    stats.currentStreak = currentStreak;
+    stats.maxStreak = Math.max(maxStreak, stats.maxStreak);
+  }
 
   saveStats(stats);
 }

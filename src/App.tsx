@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ProblemPage from "./pages/ProblemPage";
 import { usePrefs } from "./hooks/usePrefs";
@@ -8,6 +8,14 @@ function TodayRedirect() {
   const today = new Date().toISOString().slice(0, 10);
   return <Navigate to={`/${today}`} replace />;
 }
+
+// createBrowserRouter is the data router — required for useBlocker in ProblemPage.
+// Defined outside App so the router instance is stable across renders.
+const router = createBrowserRouter([
+  { path: "/", element: <TodayRedirect /> },
+  { path: "/:date", element: <HomePage /> },
+  { path: "/:date/:lang/:difficulty", element: <ProblemPage /> },
+]);
 
 function ThemeApplier() {
   const [prefs] = usePrefs();
@@ -32,13 +40,9 @@ function ThemeApplier() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <>
       <ThemeApplier />
-      <Routes>
-        <Route path="/" element={<TodayRedirect />} />
-        <Route path="/:date" element={<HomePage />} />
-        <Route path="/:date/:lang/:difficulty" element={<ProblemPage />} />
-      </Routes>
-    </BrowserRouter>
+      <RouterProvider router={router} />
+    </>
   );
 }

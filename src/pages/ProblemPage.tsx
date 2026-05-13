@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiPlay, FiRefreshCw } from "react-icons/fi";
+import { Link, useParams, useBlocker } from "react-router-dom";
+import { FiArrowLeft, FiPlay, FiRefreshCw, FiAlertTriangle } from "react-icons/fi";
 import { Layout } from "../components/layout/Layout";
 import { Header } from "../components/layout/Header";
 import { TutorialModal } from "../components/modals/TutorialModal";
+import { Modal } from "../components/ui/Modal";
 import { ProblemPanel } from "../components/problem/ProblemPanel";
 import { CodeEditor } from "../components/problem/CodeEditor";
 import { TestResultPanel } from "../components/problem/TestResultPanel";
@@ -84,6 +85,23 @@ export default function ProblemPage() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleRun]);
 
+  // Warn before leaving with unsaved work
+  const hasUnsavedCode =
+    problem !== null && code !== problem.starterCode && runner.solvedAtRun === null;
+
+  // Browser-level: tab close, address-bar navigation, browser back
+  useEffect(() => {
+    if (!hasUnsavedCode) return;
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [hasUnsavedCode]);
+
+  // In-app navigation via React Router
+  const blocker = useBlocker(hasUnsavedCode);
+
   const centerContent = (
     <div className="flex items-center gap-2">
       <Link
@@ -156,6 +174,7 @@ export default function ProblemPage() {
               testCases={problem.testCases}
               results={runner.results}
               runCount={runner.runCount}
+              solvedAtRun={runner.solvedAtRun}
               outputLines={runner.outputLines}
               isOpen={testsOpen}
               expertMode={prefs.expertMode}
@@ -215,6 +234,29 @@ export default function ProblemPage() {
             setShowTutorial(false);
           }}
         />
+      )}
+
+      {blocker.state === "blocked" && (
+        <Modal
+          title="Leave without saving?"
+          subtitle="Your code changes will be lost."
+          icon={<FiAlertTriangle size={14} />}
+          onClose={() => blocker.reset()}
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" size="md" onClick={() => blocker.reset()}>
+                Stay
+              </Button>
+              <Button variant="primary" size="md" onClick={() => blocker.proceed()}>
+                Leave
+              </Button>
+            </div>
+          }
+        >
+          <p className="text-text-secondary text-sm">
+            You haven't finished this problem. If you leave now, your progress won't be saved.
+          </p>
+        </Modal>
       )}
     </Layout>
   );

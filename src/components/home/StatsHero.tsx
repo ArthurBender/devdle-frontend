@@ -4,15 +4,15 @@ import { useLocalStats } from "../../hooks/useLocalStats";
 import { CalendarHeatmap } from "./CalendarHeatmap";
 
 interface StatsHeroProps {
-  date: string;
   totalProblems: number;
 }
 
-export function StatsHero({ date, totalProblems }: StatsHeroProps) {
+export function StatsHero({ totalProblems }: StatsHeroProps) {
   const [showCalendar, setShowCalendar] = useState(false);
   const stats = useLocalStats();
 
-  const todaySolved = stats.history.filter((a) => a.date === date && a.solved).length;
+  const actualToday = new Date().toISOString().slice(0, 10);
+  const todaySolved = stats.history.filter((a) => a.date === actualToday && a.solved).length;
 
   return (
     <div className="bg-surface border border-border rounded-xl p-4">

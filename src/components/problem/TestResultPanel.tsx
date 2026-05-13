@@ -6,6 +6,7 @@ interface TestResultPanelProps {
   testCases: TestCasePublic[];
   results: TestResult[];
   runCount: number;
+  solvedAtRun: number | null;
   outputLines: string[];
   isOpen: boolean;
   expertMode: boolean;
@@ -17,12 +18,14 @@ export function TestResultPanel({
   testCases,
   results,
   runCount,
+  solvedAtRun,
   outputLines,
   isOpen,
   expertMode,
   onClose,
   onOpen,
 }: TestResultPanelProps) {
+  const solvedRunCount = solvedAtRun ?? runCount;
   const passCount = results.filter((r) => r.passed).length;
   const failCount = results.filter((r) => !r.passed).length;
   const pendingCount = testCases.length - results.length;
@@ -74,7 +77,7 @@ export function TestResultPanel({
           <div className="px-3 py-4 flex flex-col items-center gap-2 text-center">
             <FiCheckCircle size={24} className="text-success" />
             <div className="text-success text-sm font-medium">All tests passed</div>
-            <div className="text-text-secondary text-xs">solved in {runCount} {runCount === 1 ? "run" : "runs"}</div>
+            <div className="text-text-secondary text-xs">solved in {solvedRunCount} {solvedRunCount === 1 ? "run" : "runs"}</div>
           </div>
         ) : (
           <>

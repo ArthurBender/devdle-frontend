@@ -1,5 +1,23 @@
+import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import type { Language } from "../../types";
+
+function useIsDarkTheme() {
+  const [isDark, setIsDark] = useState(
+    () => document.documentElement.getAttribute("data-theme") === "dark",
+  );
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => observer.disconnect();
+  }, []);
+  return isDark;
+}
 
 const MONACO_LANG: Record<Language, string> = {
   javascript: "javascript",
@@ -22,6 +40,8 @@ interface CodeEditorProps {
 }
 
 export function CodeEditor({ language, filename, value, onChange, fontSize }: CodeEditorProps) {
+  const isDark = useIsDarkTheme();
+
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-bg overflow-hidden">
       <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-surface shrink-0">
@@ -43,7 +63,7 @@ export function CodeEditor({ language, filename, value, onChange, fontSize }: Co
           language={MONACO_LANG[language]}
           value={value}
           onChange={(v) => onChange(v ?? "")}
-          theme="vs-dark"
+          theme={isDark ? "vs-dark" : "vs"}
           options={{
             fontSize,
             minimap: { enabled: false },
