@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { FiUser, FiHelpCircle, FiSun, FiMoon } from "react-icons/fi";
+import { FiUser, FiHelpCircle, FiSun, FiMoon, FiSettings } from "react-icons/fi";
 import { usePrefs } from "../../hooks/usePrefs";
 import { getPuzzleNumber } from "../../config";
 
@@ -8,9 +8,10 @@ interface HeaderProps {
   centerContent?: ReactNode;
   onTutorialClick: () => void;
   onStatsClick?: () => void;
+  onSettingsClick?: () => void;
 }
 
-export function Header({ date, centerContent, onTutorialClick, onStatsClick }: HeaderProps) {
+export function Header({ date, centerContent, onTutorialClick, onStatsClick, onSettingsClick }: HeaderProps) {
   const [prefs, updatePrefs] = usePrefs();
 
   const isDark =
@@ -50,6 +51,15 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick }: H
         >
           <FiHelpCircle size={15} />
         </button>
+        {onSettingsClick && (
+          <button
+            onClick={onSettingsClick}
+            className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md"
+            aria-label="Settings"
+          >
+            <FiSettings size={15} />
+          </button>
+        )}
         <button
           onClick={toggleTheme}
           className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md"

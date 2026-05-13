@@ -6,6 +6,8 @@ import { DateNav } from "../components/home/DateNav";
 import { StatsHero } from "../components/home/StatsHero";
 import { ProblemGrid } from "../components/home/ProblemGrid";
 import { TutorialModal } from "../components/modals/TutorialModal";
+import { StatsModal } from "../components/modals/StatsModal";
+import { SettingsModal } from "../components/modals/SettingsModal";
 import { useProblems } from "../hooks/useProblems";
 import { useLocalStats } from "../hooks/useLocalStats";
 import { usePrefs } from "../hooks/usePrefs";
@@ -41,6 +43,8 @@ export default function HomePage() {
   const [prefs, updatePrefs] = usePrefs();
 
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     if (!prefs.seenTutorial) setShowTutorial(true);
@@ -57,6 +61,8 @@ export default function HomePage() {
         date={safeDate}
         centerContent={<DateNav date={safeDate} />}
         onTutorialClick={() => setShowTutorial(true)}
+        onStatsClick={() => setShowStats(true)}
+        onSettingsClick={() => setShowSettings(true)}
       />
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-6 flex flex-col gap-6">
@@ -106,6 +112,8 @@ export default function HomePage() {
       </footer>
 
       {showTutorial && <TutorialModal onClose={closeTutorial} />}
+      {showStats && <StatsModal onClose={() => setShowStats(false)} />}
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </Layout>
   );
 }

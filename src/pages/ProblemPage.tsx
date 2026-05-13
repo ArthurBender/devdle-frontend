@@ -4,6 +4,8 @@ import { FiArrowLeft, FiPlay, FiRefreshCw, FiAlertTriangle } from "react-icons/f
 import { Layout } from "../components/layout/Layout";
 import { Header } from "../components/layout/Header";
 import { TutorialModal } from "../components/modals/TutorialModal";
+import { StatsModal } from "../components/modals/StatsModal";
+import { SettingsModal } from "../components/modals/SettingsModal";
 import { Modal } from "../components/ui/Modal";
 import { ProblemPanel } from "../components/problem/ProblemPanel";
 import { CodeEditor } from "../components/problem/CodeEditor";
@@ -51,6 +53,8 @@ export default function ProblemPage() {
   const [problemOpen, setProblemOpen] = useState(true);
   const [testsOpen, setTestsOpen] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const runner = useCodeRunner(
     safeLang,
@@ -132,6 +136,8 @@ export default function ProblemPage() {
         date={safeDate}
         centerContent={centerContent}
         onTutorialClick={() => setShowTutorial(true)}
+        onStatsClick={() => setShowStats(true)}
+        onSettingsClick={() => setShowSettings(true)}
       />
 
       <div className="flex-1 flex overflow-hidden">
@@ -236,6 +242,8 @@ export default function ProblemPage() {
           }}
         />
       )}
+      {showStats && <StatsModal onClose={() => setShowStats(false)} />}
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
 
       {blocker.state === "blocked" && (
         <Modal
