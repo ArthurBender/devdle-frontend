@@ -178,6 +178,7 @@ export default function ProblemPage() {
               outputLines={runner.outputLines}
               isOpen={testsOpen}
               expertMode={prefs.expertMode}
+              loadingProgress={runner.loadingProgress}
               onClose={() => setTestsOpen(false)}
               onOpen={() => setTestsOpen(true)}
             />

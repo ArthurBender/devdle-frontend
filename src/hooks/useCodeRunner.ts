@@ -9,6 +9,7 @@ interface RunnerState {
   runCount: number;
   solvedAtRun: number | null;
   isRunning: boolean;
+  loadingProgress: number | null; // null = not loading WASM; 0–100 = loading in progress
 }
 
 export function useCodeRunner(
@@ -23,13 +24,14 @@ export function useCodeRunner(
     runCount: 0,
     solvedAtRun: null,
     isRunning: false,
+    loadingProgress: null,
   });
 
   const isRunningRef = useRef(false);
   const runCountRef = useRef(0);
 
   const reset = useCallback(() => {
-    setState({ results: [], outputLines: [], runCount: 0, solvedAtRun: null, isRunning: false });
+    setState({ results: [], outputLines: [], runCount: 0, solvedAtRun: null, isRunning: false, loadingProgress: null });
     runCountRef.current = 0;
     isRunningRef.current = false;
   }, []);
@@ -41,15 +43,24 @@ export function useCodeRunner(
       runCountRef.current++;
       const thisRun = runCountRef.current;
 
-      setState((s) => ({ ...s, isRunning: true, outputLines: [], results: [] }));
+      setState((s) => ({ ...s, isRunning: true, outputLines: [], results: [], loadingProgress: null }));
 
       const liveLines: string[] = [];
 
       try {
-        const { results } = await runCode(lang, userCode, problemId, (line) => {
-          liveLines.push(line);
-          setState((s) => ({ ...s, outputLines: [...liveLines] }));
-        });
+        const { results } = await runCode(
+          lang,
+          userCode,
+          problemId,
+          (line) => {
+            liveLines.push(line);
+            setState((s) => ({ ...s, outputLines: [...liveLines] }));
+          },
+          (progress) => {
+            // Once we hit 100, clear the bar — runtime is cached for subsequent runs
+            setState((s) => ({ ...s, loadingProgress: progress >= 100 ? null : progress }));
+          },
+        );
 
         const allPassed = results.length === testCasesLength && results.every((r) => r.passed);
         recordAttempt(problemDate, problemId, allPassed, thisRun);
@@ -59,9 +70,9 @@ export function useCodeRunner(
           results,
           outputLines: liveLines,
           runCount: thisRun,
-          // Freeze the count at first solve; never overwrite once set
           solvedAtRun: prev.solvedAtRun ?? (allPassed ? thisRun : null),
           isRunning: false,
+          loadingProgress: null,
         }));
       } catch (err) {
         const errMsg = err instanceof Error ? err.message : String(err);
@@ -73,6 +84,7 @@ export function useCodeRunner(
           runCount: thisRun,
           solvedAtRun: prev.solvedAtRun,
           isRunning: false,
+          loadingProgress: null,
         }));
       }
     },

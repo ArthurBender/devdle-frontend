@@ -10,6 +10,7 @@ interface TestResultPanelProps {
   outputLines: string[];
   isOpen: boolean;
   expertMode: boolean;
+  loadingProgress: number | null;
   onClose: () => void;
   onOpen: () => void;
 }
@@ -22,6 +23,7 @@ export function TestResultPanel({
   outputLines,
   isOpen,
   expertMode,
+  loadingProgress,
   onClose,
   onOpen,
 }: TestResultPanelProps) {
@@ -73,6 +75,20 @@ export function TestResultPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto">
+        {loadingProgress !== null && (
+          <div className="px-3 py-2.5 border-b border-border">
+            <div className="flex items-center justify-between text-xs text-text-secondary mb-1.5">
+              <span>Loading runtime…</span>
+              <span>{loadingProgress}%</span>
+            </div>
+            <div className="h-1 bg-border rounded-full overflow-hidden">
+              <div
+                className="h-full bg-accent transition-all duration-300 rounded-full"
+                style={{ width: `${loadingProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
         {allPassed ? (
           <div className="px-3 py-4 flex flex-col items-center gap-2 text-center">
             <FiCheckCircle size={24} className="text-success" />
