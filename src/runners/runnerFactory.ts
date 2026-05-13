@@ -30,6 +30,8 @@ function getWorker(lang: Language): Worker {
     worker = new Worker(new URL("./js.worker.ts", import.meta.url), { type: "module" });
   } else if (lang === "python") {
     worker = new Worker(new URL("./python.worker.ts", import.meta.url), { type: "module" });
+  } else if (lang === "ruby") {
+    worker = new Worker(new URL("./ruby.worker.ts", import.meta.url), { type: "module" });
   } else {
     throw new Error(`Runner for ${lang} is not yet available`);
   }

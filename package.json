@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "@ruby/3.4-wasm-wasi": "^2.9.3-2.9.4",
+    "@ruby/wasm-wasi": "^2.9.3-2.9.4",
     "@tailwindcss/vite": "^4.3.0",
     "@types/react-calendar-heatmap": "^1.9.0",
     "pyodide": "^0.29.4",
