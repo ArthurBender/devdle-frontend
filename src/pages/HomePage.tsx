@@ -107,7 +107,7 @@ export default function HomePage() {
           © 2026 Devdle · daily puzzles for devs
         </span>
         <span className="text-xs text-text-secondary">
-          Next puzzle in <NextPuzzleCountdown />
+          Next puzzle in <span className="font-bold text-text-primary"><NextPuzzleCountdown /></span>
         </span>
       </footer>
 

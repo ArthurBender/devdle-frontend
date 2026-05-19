@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { FiUser, FiHelpCircle, FiSun, FiMoon, FiSettings } from "react-icons/fi";
 import { usePrefs } from "../../hooks/usePrefs";
 import { getPuzzleNumber } from "../../config";
@@ -28,7 +29,7 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick, onS
   return (
     <header className="bg-surface border-b border-border px-4 h-12 flex items-center shrink-0">
       <div className="flex-1 flex items-center gap-2">
-        <span className="font-bold text-text-primary text-base tracking-tight">Devdle</span>
+        <Link to="/" className="font-serif font-bold text-text-primary text-lg tracking-tight italic hover:opacity-80 transition-opacity">Devdle</Link>
         <span className="text-text-secondary text-xs bg-surface border border-border rounded px-1.5 py-0.5">#{puzzleNumber}</span>
       </div>
       <div className="flex-1 flex items-center justify-center">
@@ -38,7 +39,7 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick, onS
         {onStatsClick && (
           <button
             onClick={onStatsClick}
-            className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md"
+            className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md cursor-pointer"
             aria-label="Stats"
           >
             <FiUser size={15} />
@@ -46,7 +47,7 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick, onS
         )}
         <button
           onClick={onTutorialClick}
-          className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md"
+          className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md cursor-pointer"
           aria-label="How it works"
         >
           <FiHelpCircle size={15} />
@@ -54,7 +55,7 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick, onS
         {onSettingsClick && (
           <button
             onClick={onSettingsClick}
-            className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md"
+            className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md cursor-pointer"
             aria-label="Settings"
           >
             <FiSettings size={15} />
@@ -62,7 +63,7 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick, onS
         )}
         <button
           onClick={toggleTheme}
-          className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md"
+          className="p-2 text-text-secondary hover:text-text-primary transition-colors rounded-md cursor-pointer"
           aria-label="Toggle theme"
         >
           {isDark ? <FiSun size={15} /> : <FiMoon size={15} />}

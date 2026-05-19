@@ -30,7 +30,7 @@ export function Modal({ title, subtitle, icon, onClose, children, footer }: Moda
           </div>
           <button
             onClick={onClose}
-            className="text-text-secondary hover:text-text-primary transition-colors ml-4 text-lg leading-none"
+            className="text-text-secondary hover:text-text-primary transition-colors ml-4 text-lg leading-none cursor-pointer"
             aria-label="Close"
           >
             ×

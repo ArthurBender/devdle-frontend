@@ -69,7 +69,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     { value: "system", label: "System" },
   ];
 
-  const fontSizes: Array<UserPrefs["editorFontSize"]> = [12, 13, 14, 16];
+  const fontSizes: Array<UserPrefs["editorFontSize"]> = [12, 13, 14, 16, 18];
 
   function handleBackup() {
     const stats = loadStats();
@@ -204,11 +204,6 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 />
               }
             />
-            <SettingRow
-              label="Auto-format on run"
-              description="Apply Prettier/Black/RuboCop conventions before tests execute."
-              control={<Toggle checked={false} onChange={() => {}} />}
-            />
           </div>
         </div>
 
@@ -256,15 +251,17 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               label="Reset all stats"
               description="Clears streak, history, and attempts. Cannot be undone."
               control={
-                <Button
-                  variant={resetConfirm ? "primary" : "secondary"}
-                  size="sm"
+                <button
                   onClick={handleReset}
-                  className={resetConfirm ? "bg-error hover:bg-error/90" : "border-error text-error hover:bg-error/10"}
+                  className={`inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer px-3 py-1 text-xs rounded-md ${
+                    resetConfirm
+                      ? "bg-error text-white hover:bg-error/90 border border-error"
+                      : "text-error hover:bg-error/10 border border-error"
+                  }`}
                 >
                   <FiTrash2 size={12} />
-                  {resetConfirm ? "Confirm" : "Reset"}
-                </Button>
+                  {resetConfirm ? "Confirm reset" : "Reset"}
+                </button>
               }
             />
           </div>

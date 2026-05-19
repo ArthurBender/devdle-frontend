@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import { FiChevronLeft } from "react-icons/fi";
 import type { Problem, Language, Difficulty } from "../../types";
@@ -20,6 +21,8 @@ const LANG_BG_CLASS: Record<Language, string> = {
   ruby: "bg-lang-rb",
 };
 
+const MIN_WIDTH = 288; // w-72
+
 interface ProblemPanelProps {
   problem: Problem;
   language: Language;
@@ -30,6 +33,32 @@ interface ProblemPanelProps {
 }
 
 export function ProblemPanel({ problem, language, difficulty, isOpen, onClose, onOpen }: ProblemPanelProps) {
+  const [width, setWidth] = useState(MIN_WIDTH);
+  const isResizingRef = useRef(false);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  function startResize(e: React.MouseEvent) {
+    e.preventDefault();
+    isResizingRef.current = true;
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+
+    function onMouseMove(ev: MouseEvent) {
+      if (!isResizingRef.current) return;
+      setWidth(Math.max(MIN_WIDTH, startWidthRef.current + ev.clientX - startXRef.current));
+    }
+
+    function onMouseUp() {
+      isResizingRef.current = false;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }
+
   if (!isOpen) {
     return (
       <div
@@ -49,14 +78,17 @@ export function ProblemPanel({ problem, language, difficulty, isOpen, onClose, o
   }
 
   return (
-    <div className="w-72 bg-surface border-r border-border flex flex-col shrink-0 overflow-hidden">
+    <div
+      style={{ width: `${width}px` }}
+      className="bg-surface border-r border-border flex flex-col shrink-0 overflow-hidden relative"
+    >
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-border shrink-0">
         <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">
           Problem
         </span>
         <button
           onClick={onClose}
-          className="text-text-secondary hover:text-text-primary transition-colors"
+          className="text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
           aria-label="Close problem panel"
         >
           <FiChevronLeft size={15} />
@@ -76,6 +108,11 @@ export function ProblemPanel({ problem, language, difficulty, isOpen, onClose, o
           <Markdown>{problem.description}</Markdown>
         </div>
       </div>
+      {/* Resize handle on right edge */}
+      <div
+        className="absolute inset-y-0 right-0 w-1 cursor-col-resize hover:bg-accent/30 transition-colors"
+        onMouseDown={startResize}
+      />
     </div>
   );
 }

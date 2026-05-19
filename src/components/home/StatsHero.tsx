@@ -35,7 +35,7 @@ export function StatsHero({ totalProblems }: StatsHeroProps) {
         </div>
         <button
           onClick={() => setShowCalendar((v) => !v)}
-          className="text-text-secondary hover:text-text-primary text-xs flex items-center gap-1.5 transition-colors border border-border rounded-md px-2.5 py-1.5"
+          className="text-text-secondary hover:text-text-primary text-xs flex items-center gap-1.5 transition-colors border border-border rounded-md px-2.5 py-1.5 cursor-pointer"
         >
           <FiCalendar size={11} />
           {showCalendar ? "Hide calendar" : "Show calendar"}

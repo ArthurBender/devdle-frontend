@@ -17,7 +17,7 @@ export function OutputPanel({ lines }: OutputPanelProps) {
     <div className="border-t border-border shrink-0">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="w-full flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:text-text-primary transition-colors"
+        className="w-full flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
       >
         {expanded ? <FiChevronDown size={12} /> : <FiChevronRight size={12} />}
         <span className="font-medium uppercase tracking-wide">Output</span>

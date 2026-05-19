@@ -1,6 +1,9 @@
+import { useRef, useState } from "react";
 import { FiChevronRight, FiCheck, FiX, FiCheckCircle } from "react-icons/fi";
 import { OutputPanel } from "./OutputPanel";
 import type { TestCasePublic, TestResult } from "../../types";
+
+const MIN_WIDTH = 256; // w-64
 
 interface TestResultPanelProps {
   testCases: TestCasePublic[];
@@ -27,6 +30,33 @@ export function TestResultPanel({
   onClose,
   onOpen,
 }: TestResultPanelProps) {
+  const [width, setWidth] = useState(MIN_WIDTH);
+  const isResizingRef = useRef(false);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  function startResize(e: React.MouseEvent) {
+    e.preventDefault();
+    isResizingRef.current = true;
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+
+    function onMouseMove(ev: MouseEvent) {
+      if (!isResizingRef.current) return;
+      // Left edge: dragging left increases width
+      setWidth(Math.max(MIN_WIDTH, startWidthRef.current + startXRef.current - ev.clientX));
+    }
+
+    function onMouseUp() {
+      isResizingRef.current = false;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }
+
   const solvedRunCount = solvedAtRun ?? runCount;
   const passCount = results.filter((r) => r.passed).length;
   const failCount = results.filter((r) => !r.passed).length;
@@ -60,18 +90,27 @@ export function TestResultPanel({
   }
 
   return (
-    <div className="w-64 bg-surface border-l border-border flex flex-col shrink-0 overflow-hidden">
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-border shrink-0">
-        <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">
-          Tests{results.length > 0 ? ` ${passCount} / ${testCases.length}` : ""}
-        </span>
+    <div
+      style={{ width: `${width}px` }}
+      className="bg-surface border-l border-border flex flex-col shrink-0 overflow-hidden relative"
+    >
+      {/* Resize handle on left edge */}
+      <div
+        className="absolute inset-y-0 left-0 w-1 cursor-col-resize hover:bg-accent/30 transition-colors z-10"
+        onMouseDown={startResize}
+      />
+
+      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border shrink-0">
         <button
           onClick={onClose}
-          className="text-text-secondary hover:text-text-primary transition-colors"
+          className="text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
           aria-label="Close tests panel"
         >
           <FiChevronRight size={15} />
         </button>
+        <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">
+          Tests{results.length > 0 ? ` ${passCount} / ${testCases.length}` : ""}
+        </span>
       </div>
 
       <div className="flex-1 overflow-y-auto">

@@ -78,8 +78,8 @@ export function StatsModal({ onClose }: StatsModalProps) {
   const statTiles = [
     { label: "PLAYED", value: stats.totalPlayed },
     { label: "WIN %", value: winPct },
-    { label: "CURRENT", value: stats.currentStreak },
-    { label: "MAX", value: stats.maxStreak },
+    { label: "STREAK", value: stats.currentStreak },
+    { label: "MAX STREAK", value: stats.maxStreak },
   ];
 
   return (
@@ -124,11 +124,9 @@ export function StatsModal({ onClose }: StatsModalProps) {
                     className="h-full bg-accent rounded transition-all duration-500"
                     style={{ width: `${(count / maxBucket) * 100}%` }}
                   />
-                  {count > 0 && (
-                    <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-white text-xs font-medium tabular-nums">
-                      {count}
-                    </span>
-                  )}
+                  <span className={`absolute right-1.5 top-1/2 -translate-y-1/2 text-xs font-medium tabular-nums ${count === maxBucket && count > 0 ? "text-white" : "text-accent"}`}>
+                    {count}
+                  </span>
                 </div>
               </div>
             ))}
@@ -146,9 +144,9 @@ export function StatsModal({ onClose }: StatsModalProps) {
             {(["javascript", "python", "ruby"] as Language[]).map((lang) => (
               <div
                 key={lang}
-                className="bg-bg border border-border rounded-lg px-3 py-2.5"
+                className="bg-bg border border-border rounded-lg px-3 py-2.5 text-center"
               >
-                <div className="flex items-center gap-1.5 mb-1">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
                   <span className={`w-2 h-2 rounded-full shrink-0 ${LANG_DOT[lang]}`} />
                   <span className="text-xs text-text-secondary">{LANG_LABELS[lang]}</span>
                 </div>

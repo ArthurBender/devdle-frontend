@@ -48,7 +48,6 @@ export function CodeEditor({ language, filename, value, onChange, fontSize }: Co
         <div className="flex items-center gap-1.5">
           <span className={`w-2.5 h-2.5 rounded-full ${LANG_DOT_CLASS[language]}`} />
           <span className="text-xs text-text-primary font-mono">{filename}</span>
-          <span className={`w-2 h-2 rounded-full ${LANG_DOT_CLASS[language]} opacity-50`} />
         </div>
         <div className="ml-auto flex items-center gap-2 text-xs text-text-secondary">
           <span>UTF-8</span>

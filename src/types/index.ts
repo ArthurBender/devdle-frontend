@@ -57,7 +57,7 @@ export interface LocalStats {
 
 export interface UserPrefs {
   theme: "dark" | "light" | "system";
-  editorFontSize: 12 | 13 | 14 | 16;
+  editorFontSize: 12 | 13 | 14 | 16 | 18;
   expertMode: boolean;
   seenTutorial: boolean;
 }
