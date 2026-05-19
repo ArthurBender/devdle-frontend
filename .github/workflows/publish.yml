@@ -26,7 +26,7 @@ jobs:
         run: npm run lint
 
       - name: Build Docker image
-        run: docker image build -t arthurllbender/devdle-frontend:latest .
+        run: docker image build --build-arg VITE_API_BASE_URL=https://devdle-api.arthur-bender.com -t arthurllbender/devdle-frontend:latest .
 
       - name: Login to Docker Hub
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
