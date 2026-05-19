@@ -42,13 +42,9 @@ export default function HomePage() {
   const stats = useLocalStats();
   const [prefs, updatePrefs] = usePrefs();
 
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => !prefs.seenTutorial);
   const [showStats, setShowStats] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-
-  useEffect(() => {
-    if (!prefs.seenTutorial) setShowTutorial(true);
-  }, [prefs.seenTutorial]);
 
   function closeTutorial() {
     updatePrefs({ seenTutorial: true });

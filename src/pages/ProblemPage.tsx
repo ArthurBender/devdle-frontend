@@ -50,6 +50,12 @@ export default function ProblemPage() {
       : null;
 
   const [code, setCode] = useState<string>("");
+  const [prevProblemId, setPrevProblemId] = useState<string | undefined>(problem?.id);
+  if (problem?.id !== prevProblemId) {
+    setPrevProblemId(problem?.id);
+    if (problem) setCode(problem.starterCode);
+  }
+
   const [problemOpen, setProblemOpen] = useState(true);
   const [testsOpen, setTestsOpen] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -63,13 +69,10 @@ export default function ProblemPage() {
     problem?.testCases.length ?? 0,
   );
 
-  // Reset editor + runner when problem changes
+  // Reset runner when problem changes
   useEffect(() => {
-    if (problem) {
-      setCode(problem.starterCode);
-      runner.reset();
-    }
-    // runner.reset is stable — eslint-disable-next-line is correct
+    if (problem) runner.reset();
+    // runner.reset is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem?.id]);
 

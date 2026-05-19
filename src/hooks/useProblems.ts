@@ -11,12 +11,16 @@ export type ProblemsState =
 
 export function useProblems(date: string): ProblemsState {
   const [state, setState] = useState<ProblemsState>({ status: "loading" });
+  const [prevDate, setPrevDate] = useState(date);
+
+  if (date !== prevDate) {
+    setPrevDate(date);
+    setState({ status: "loading" });
+  }
 
   useEffect(() => {
     let cancelled = false;
     let retryTimeout: ReturnType<typeof setTimeout> | null = null;
-
-    setState({ status: "loading" });
 
     async function load() {
       try {

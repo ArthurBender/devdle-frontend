@@ -4,7 +4,7 @@ import { useLocalStats } from "../../hooks/useLocalStats";
 export function CalendarHeatmap() {
   const stats = useLocalStats();
   const today = new Date().toISOString().slice(0, 10);
-  const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const startDate = new Date(new Date().getTime() - 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
   const solvedByDate: Record<string, number> = {};
   for (const a of stats.history) {

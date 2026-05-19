@@ -2,13 +2,14 @@ import { loadPyodide } from "pyodide";
 import type { RunRequest, WorkerMessage } from "./protocol";
 import type { TestCaseInternal, TestResult } from "../types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let pyodideInstance: any = null;
-let initPromise: Promise<any> | null = null;
+type Pyodide = Awaited<ReturnType<typeof loadPyodide>>;
+
+let pyodideInstance: Pyodide | null = null;
+let initPromise: Promise<Pyodide> | null = null;
 
 const post = (msg: WorkerMessage) => self.postMessage(msg);
 
-async function ensurePyodide(): Promise<any> {
+async function ensurePyodide(): Promise<Pyodide> {
   if (pyodideInstance) return pyodideInstance;
 
   if (!initPromise) {
@@ -39,8 +40,7 @@ self.onmessage = async (e: MessageEvent<RunRequest>) => {
   const { type, requestId, userCode, problemId } = e.data;
   if (type !== "RUN") return;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let py: any;
+  let py: Pyodide;
   try {
     py = await ensurePyodide();
   } catch (err) {
