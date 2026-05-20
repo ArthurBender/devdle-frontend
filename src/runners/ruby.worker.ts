@@ -2,6 +2,7 @@ import { DefaultRubyVM } from "@ruby/wasm-wasi/dist/browser";
 import rubyWasmUrl from "@ruby/3.4-wasm-wasi/dist/ruby+stdlib.wasm?url";
 import type { RunRequest, WorkerMessage } from "./protocol";
 import type { TestCaseInternal, TestResult } from "../types";
+import { fetchTestCases } from "../api/client";
 
 type RubyVM = Awaited<ReturnType<typeof DefaultRubyVM>>["vm"];
 
@@ -132,9 +133,7 @@ self.onmessage = async (e: MessageEvent<RunRequest>) => {
 
   let testCases: TestCaseInternal[];
   try {
-    const res = await fetch(`/api/internal/testcases/${problemId}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const body = (await res.json()) as { testCasesInternal: TestCaseInternal[] };
+    const body = await fetchTestCases(problemId);
     testCases = body.testCasesInternal;
   } catch (err) {
     post({
