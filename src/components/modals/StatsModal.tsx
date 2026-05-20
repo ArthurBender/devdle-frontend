@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { FiBarChart2 } from "react-icons/fi";
+import { FiArrowLeft, FiBarChart2 } from "react-icons/fi";
 import { Modal } from "../ui/Modal";
+import { Button } from "../ui/Button";
 import { useLocalStats } from "../../hooks/useLocalStats";
 import type { Language } from "../../types";
 
 interface StatsModalProps {
   onClose: () => void;
+  onGoHome?: () => void;
 }
 
 function useCountdown() {
@@ -43,7 +45,7 @@ const LANG_DOT: Record<Language, string> = {
   ruby: "bg-lang-rb",
 };
 
-export function StatsModal({ onClose }: StatsModalProps) {
+export function StatsModal({ onClose, onGoHome }: StatsModalProps) {
   const stats = useLocalStats();
   const countdown = useCountdown();
 
@@ -88,6 +90,13 @@ export function StatsModal({ onClose }: StatsModalProps) {
       subtitle="Your all-time stats"
       icon={<FiBarChart2 size={14} />}
       onClose={onClose}
+      footer={
+        onGoHome ? (
+          <Button variant="primary" size="md" className="w-full justify-center" onClick={onGoHome}>
+            Solve another problem
+          </Button>
+        ) : undefined
+      }
     >
       <div className="space-y-5">
         {/* Stat tiles */}

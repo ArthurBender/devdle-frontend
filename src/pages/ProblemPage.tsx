@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useParams, useBlocker } from "react-router-dom";
+import { Link, useNavigate, useParams, useBlocker } from "react-router-dom";
 import { FiArrowLeft, FiPlay, FiRefreshCw, FiAlertTriangle } from "react-icons/fi";
 import { Layout } from "../components/layout/Layout";
 import { Header } from "../components/layout/Header";
@@ -56,10 +56,12 @@ export default function ProblemPage() {
     if (problem) setCode(problem.starterCode);
   }
 
+  const navigate = useNavigate();
+
   const [problemOpen, setProblemOpen] = useState(true);
   const [testsOpen, setTestsOpen] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showStats, setShowStats] = useState(false);
+  const [statsMode, setStatsMode] = useState<null | "nav" | "resolved">(null);
   const [showSettings, setShowSettings] = useState(false);
 
   const runner = useCodeRunner(
@@ -75,6 +77,13 @@ export default function ProblemPage() {
     // runner.reset is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem?.id]);
+
+  // Auto-open stats modal on solve
+  useEffect(() => {
+    if (runner.solvedAtRun !== null) {
+      setStatsMode("resolved");
+    }
+  }, [runner.solvedAtRun]);
 
   const handleRun = useCallback(() => {
     if (problem) runner.run(code);
@@ -139,7 +148,7 @@ export default function ProblemPage() {
         date={safeDate}
         centerContent={centerContent}
         onTutorialClick={() => setShowTutorial(true)}
-        onStatsClick={() => setShowStats(true)}
+        onStatsClick={() => setStatsMode("nav")}
         onSettingsClick={() => setShowSettings(true)}
       />
 
@@ -245,7 +254,12 @@ export default function ProblemPage() {
           }}
         />
       )}
-      {showStats && <StatsModal onClose={() => setShowStats(false)} />}
+      {statsMode !== null && (
+        <StatsModal
+          onClose={() => setStatsMode(null)}
+          onGoHome={statsMode === "resolved" ? () => navigate(`/${safeDate}`) : undefined}
+        />
+      )}
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
 
       {blocker.state === "blocked" && (
