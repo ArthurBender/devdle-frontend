@@ -16,10 +16,8 @@ async function ensurePyodide(): Promise<Pyodide> {
   if (!initPromise) {
     post({ type: "LOADING", progress: 0 });
     initPromise = (async () => {
-      // loadPyodide auto-detects its indexURL from import.meta.url,
-      // which Vite resolves to node_modules/pyodide/ (no CDN needed)
       post({ type: "LOADING", progress: 20 });
-      const py = await loadPyodide();
+      const py = await loadPyodide({ indexURL: "/pyodide/" });
       post({ type: "LOADING", progress: 100 });
       return py;
     })().catch((err) => {

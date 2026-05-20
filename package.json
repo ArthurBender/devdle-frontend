@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "copy-pyodide": "node -e \"const fs=require('fs');const src='node_modules/pyodide';const dst='public/pyodide';fs.mkdirSync(dst,{recursive:true});['pyodide.asm.js','pyodide.asm.wasm','pyodide.js','pyodide.mjs','pyodide-lock.json','python_stdlib.zip'].forEach(f=>fs.copyFileSync(src+'/'+f,dst+'/'+f))\"",
+    "build": "npm run copy-pyodide && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
