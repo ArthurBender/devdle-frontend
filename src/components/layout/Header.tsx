@@ -29,7 +29,10 @@ export function Header({ date, centerContent, onTutorialClick, onStatsClick, onS
   return (
     <header className="bg-surface border-b border-border px-4 h-12 flex items-center shrink-0">
       <div className="flex-1 flex items-center gap-2">
-        <Link to="/" className="font-serif font-bold text-text-primary text-lg tracking-tight italic hover:opacity-80 transition-opacity">Devdle</Link>
+        <Link to="/" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+          <img src="/brand.png" alt="" className="h-6 object-cover" />
+          <span className="font-serif font-bold text-text-primary text-lg tracking-tight italic">Devdle</span>
+        </Link>
         <span className="text-text-secondary text-xs bg-surface border border-border rounded px-1.5 py-0.5">#{puzzleNumber}</span>
       </div>
       <div className="flex-1 flex items-center justify-center">
