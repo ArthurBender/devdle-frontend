@@ -56,12 +56,6 @@ export default function ProblemPage() {
     if (problem) setCode(problem.starterCode);
   }
 
-  const [prevSolvedAtRun, setPrevSolvedAtRun] = useState(runner.solvedAtRun);
-  if (runner.solvedAtRun !== prevSolvedAtRun) {
-    setPrevSolvedAtRun(runner.solvedAtRun);
-    if (runner.solvedAtRun !== null) setStatsMode("resolved");
-  }
-
   const navigate = useNavigate();
 
   const [problemOpen, setProblemOpen] = useState(true);
@@ -76,6 +70,12 @@ export default function ProblemPage() {
     safeDate,
     problem?.testCases.length ?? 0,
   );
+
+  const [prevSolvedAtRun, setPrevSolvedAtRun] = useState(runner.solvedAtRun);
+  if (runner.solvedAtRun !== prevSolvedAtRun) {
+    setPrevSolvedAtRun(runner.solvedAtRun);
+    if (runner.solvedAtRun !== null) setStatsMode("resolved");
+  }
 
   // Reset runner when problem changes
   useEffect(() => {
