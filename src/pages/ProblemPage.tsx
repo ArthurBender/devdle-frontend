@@ -56,6 +56,12 @@ export default function ProblemPage() {
     if (problem) setCode(problem.starterCode);
   }
 
+  const [prevSolvedAtRun, setPrevSolvedAtRun] = useState(runner.solvedAtRun);
+  if (runner.solvedAtRun !== prevSolvedAtRun) {
+    setPrevSolvedAtRun(runner.solvedAtRun);
+    if (runner.solvedAtRun !== null) setStatsMode("resolved");
+  }
+
   const navigate = useNavigate();
 
   const [problemOpen, setProblemOpen] = useState(true);
@@ -78,12 +84,6 @@ export default function ProblemPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem?.id]);
 
-  // Auto-open stats modal on solve
-  useEffect(() => {
-    if (runner.solvedAtRun !== null) {
-      setStatsMode("resolved");
-    }
-  }, [runner.solvedAtRun]);
 
   const handleRun = useCallback(() => {
     if (problem) runner.run(code);

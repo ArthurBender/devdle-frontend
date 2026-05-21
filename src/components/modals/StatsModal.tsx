@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiArrowLeft, FiBarChart2 } from "react-icons/fi";
+import { FiBarChart2 } from "react-icons/fi";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { useLocalStats } from "../../hooks/useLocalStats";
